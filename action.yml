@@ -46,4 +46,4 @@ runs:
         echo "branch reset out:"
         cat branch_out
 
-        echo "branch_id=$(cat branch_out | jq --raw-output '.branch.id')" >> $GITHUB_ENV
+        echo "branch_id=$(cat branch_out | jq --raw-output '.id')" >> $GITHUB_ENV

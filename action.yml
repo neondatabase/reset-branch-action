@@ -39,7 +39,7 @@ runs:
 
         neonctl branches reset ${{ inputs.branch }} \
           --project-id ${{ inputs.project_id }} \
-          $(if [[ -n "${{ inputs.parent }}" ]] && [["${{ inputs.parent }}" != "false"]] ; then echo "--parent"; fi) \
+          $(if [[ -n "${{ inputs.parent }}" ]] && [[ "${{ inputs.parent }}" != "false" ]]; then echo "--parent"; fi) \
           --output json \
           > branch_out
 

@@ -36,7 +36,6 @@ runs:
       id: reset-branch
       shell: bash
       run: |
-
         neonctl branches reset ${{ inputs.branch }} \
           --project-id ${{ inputs.project_id }} \
           $(if [[ -n "${{ inputs.parent }}" ]] && [[ "${{ inputs.parent }}" != "false" ]]; then echo "--parent"; fi) \
@@ -46,4 +45,4 @@ runs:
         echo "branch reset out:"
         cat branch_out
 
-        echo "branch_id=$(cat branch_out | jq --raw-output '.id')" >> $GITHUB_ENV
+        echo "branch_id=$(cat branch_out | jq --raw-output '.id')" >> $GITHUB_OUTPUT

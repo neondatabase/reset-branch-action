@@ -28,7 +28,7 @@ jobs:
 ```yml
 outputs:
   branch_id:
-    description: 'New branch id'
+    description: 'Reset branch id'
     value: ${{ steps.create-branch.outputs.branch_id }}
 ```
 

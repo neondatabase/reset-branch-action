@@ -17,7 +17,7 @@ jobs:
     with:
       project_id: rapid-haze-373089
       # optional (defaults to your primary branch)
-      parent: yes
+      parent: true
       branch: from_action_reusable
       api_key: {{ secrets.NEON_API_KEY }}
     id: reset-branch

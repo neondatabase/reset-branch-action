@@ -34,7 +34,7 @@ jobs:
 ```yaml
 outputs:
   branch_id:
-    description: "Reset branch id"
+    description: 'Reset branch id'
     value: ${{ steps.reset-branch.outputs.branch_id }}
 ```
 - `branch_id`: The ID of the newly reset branch.

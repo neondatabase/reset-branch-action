@@ -23,6 +23,13 @@ outputs:
   branch_id:
     description: 'Returns the branch id'
     value: ${{ steps.reset-branch.outputs.branch_id }}
+  db_url:
+    description: 'DATABASE_URL of the branch after the reset'
+    value: ${{ steps.reset-branch.outputs.db_url }}
+  db_url_with_pooler:
+    description: 'DATABASE_URL with pooler of the branch after the reset'
+    value: ${{ steps.reset-branch.outputs.db_url_with_pooler }}
+
 
 runs:
   using: 'composite'
@@ -41,8 +48,12 @@ runs:
           $(if [[ -n "${{ inputs.parent }}" ]] && [[ "${{ inputs.parent }}" != "false" ]]; then echo "--parent"; fi) \
           --output json \
           > branch_out
-
+        
+        CS_POOLED=$(neonctl cs ${{ inputs.branch }} --project-id ${{ inputs.project_id }} --pooled)
+        CS=$(neonctl cs ${{ inputs.branch }} --project-id ${{ inputs.project_id }})
+        
         echo "branch reset out:"
         cat branch_out
 
-        echo "branch_id=$(cat branch_out | jq --raw-output '.id')" >> $GITHUB_OUTPUT
+        echo "db_url=${CS}" >> $GITHUB_OUTPUT
+        echo "db_url_with_pooler=${CS_POOLED}" >> $GITHUB_OUTPUT

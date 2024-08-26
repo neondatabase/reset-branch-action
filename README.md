@@ -28,7 +28,12 @@ jobs:
 - `project_id`: The ID of your Neon project. Find this value in the Neon Console on the **Settings** page.
 - `parent`: If specified, the branch will be reset to the latest (HEAD) of parent branch.
 - `branch`: The name or id of the branch to reset.
-- `api_key`: An API key created in your Neon account. See [How to set up the NEON_API_KEY](#how-to-set-up-the-neon_api_key) for instructions.
+- `api_key`: An API key created in your Neon account. See [How to set up the NEON_API_KEY](#how-to-set-up-the-neon_api_key) for instructions. 
+The action provides connection string as an output. `cs_*` optional inputs allow connection string to be configured. 
+- `cs_role_name`: The output connection string db role name.
+- `cs_database`: The output connection string database name.
+- `cs_prisma`: Use prisma in output connection string or not. Default - 'false'. 
+- `cs_ssl`: Add sslmode to the connection string. Supported values are: "require", "verify-ca", "verify-full", "omit".  Default - 'require'.
 
 ### Outputs
 
@@ -43,7 +48,7 @@ outputs:
   db_url_with_pooler:
     description: 'DATABASE_URL with pooler of the branch after the reset'
     value: ${{ steps.reset-branch.outputs.db_url_with_pooler }}
-  cs_username:
+  cs_role_name:
     description: 'The output connection string db role name'
   cs_database:
     description: 'The output connection string database name'

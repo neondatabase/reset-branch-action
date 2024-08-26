@@ -20,14 +20,18 @@ inputs:
     required: false
   cs_username:
     description: 'The output connection string db role name'
+    required: false
   cs_database:
     description: 'The output connection string database name'
+    required: false
   cs_prisma:
     description: 'Use prisma in output connection string or not'
+    required: false
     default: 'false'
   cs_ssl:
     description: >
       Add sslmode to the connection string. Supported values are: "require", "verify-ca", "verify-full", "omit".
+    required: false
     default: 'require'
 
 outputs:
@@ -40,7 +44,6 @@ outputs:
   db_url_with_pooler:
     description: 'DATABASE_URL with pooler of the branch after the reset'
     value: ${{ steps.reset-branch.outputs.db_url_with_pooler }}
-
 
 runs:
   using: 'composite'

@@ -19,7 +19,7 @@ jobs:
           project_id: rapid-haze-373089
           parent: true
           branch: child_branch
-          api_key: {{ secrets.NEON_API_KEY }}
+          api_key: ${{ secrets.NEON_API_KEY }}
         id: reset-branch
       - run: echo branch_id ${{ steps.reset-branch.outputs.branch_id }}
 ```

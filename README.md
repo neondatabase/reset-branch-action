@@ -43,6 +43,17 @@ outputs:
   db_url_with_pooler:
     description: 'DATABASE_URL with pooler of the branch after the reset'
     value: ${{ steps.reset-branch.outputs.db_url_with_pooler }}
+  cs_username:
+    description: 'The output connection string db role name'
+  cs_database:
+    description: 'The output connection string database name'
+  cs_prisma:
+    description: 'Use prisma in output connection string or not'
+    default: 'false'
+  cs_ssl:
+    description: >
+      Add sslmode to the connection string. Supported values are: "require", "verify-ca", "verify-full", "omit".
+    default: 'require'
 ```
 - `branch_id`: The ID of the newly reset branch.
 - `db_url`: Database connection string to the branch after the reset.

@@ -18,6 +18,17 @@ inputs:
   parent:
     description: 'If specified, the branch will be reset to the parent branch'
     required: false
+  cs_username:
+    description: 'The output connection string db role name'
+  cs_database:
+    description: 'The output connection string database name'
+  cs_prisma:
+    description: 'Use prisma in output connection string or not'
+    default: 'false'
+  cs_ssl:
+    description: >
+      Add sslmode to the connection string. Supported values are: "require", "verify-ca", "verify-full", "omit".
+    default: 'require'
 
 outputs:
   branch_id:
@@ -54,8 +65,20 @@ runs:
 
         echo "branch_id=$(cat branch_out | jq --raw-output '.id')" >> $GITHUB_OUTPUT
         
-        CS_POOLED=$(neonctl cs ${{ inputs.branch }} --project-id ${{ inputs.project_id }} --pooled)
-        CS=$(neonctl cs ${{ inputs.branch }} --project-id ${{ inputs.project_id }})
+        CS=$(neonctl cs ${{inputs.branch_id}} \
+        --project-id ${{ inputs.project_id }} \
+        $(if [[ -n "${{ inputs.cs_username }}" ]] && [[ "${{ inputs.cs_username }}" != "false" ]]; then echo "--role-name ${{ inputs.cs_username }}"; fi) \
+        $(if [[ -n "${{ inputs.cs_database }}" ]] && [[ "${{ inputs.cs_database }}" != "false" ]]; then echo "--database-name ${{ inputs.cs_database }}"; fi) \
+        $(if [[ -n "${{ inputs.cs_ssl }}" ]]; then echo "--ssl ${{ inputs.cs_ssl }}"; fi) \
+        $(if [[ -n "${{ inputs.cs_prisma }}" ]]; then echo "--ssl ${{ inputs.cs_prisma }}"; fi))
+        
+        CS_POOLED=$(neonctl cs ${{inputs.branch_id}} \
+        --project-id ${{ inputs.project_id }} \
+        $(if [[ -n "${{ inputs.cs_username }}" ]] && [[ "${{ inputs.cs_username }}" != "false" ]]; then echo "--role-name ${{ inputs.cs_username }}"; fi) \
+        $(if [[ -n "${{ inputs.cs_username }}" ]] && [[ "${{ inputs.cs_username }}" != "false" ]]; then echo "--database-name ${{ inputs.cs_username }}"; fi) \
+        $(if [[ -n "${{ inputs.cs_username }}" ]]; then echo "--ssl ${{ inputs.cs_username }}"; fi) \
+        $(if [[ -n "${{ inputs.cs_username }}" ]]; then echo "--ssl ${{ inputs.cs_username }}"; fi) \
+        --pooled)
         
         echo "db_url=${CS}" >> $GITHUB_OUTPUT
         echo "db_url_with_pooler=${CS_POOLED}" >> $GITHUB_OUTPUT

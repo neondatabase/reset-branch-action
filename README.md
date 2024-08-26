@@ -37,8 +37,16 @@ outputs:
   branch_id:
     description: 'Reset branch id'
     value: ${{ steps.reset-branch.outputs.branch_id }}
+  db_url:
+    description: 'DATABASE_URL of the branch after the reset'
+    value: ${{ steps.reset-branch.outputs.db_url }}
+  db_url_with_pooler:
+    description: 'DATABASE_URL with pooler of the branch after the reset'
+    value: ${{ steps.reset-branch.outputs.db_url_with_pooler }}
 ```
 - `branch_id`: The ID of the newly reset branch.
+- `db_url`: Database connection string to the branch after the reset.
+- `db_url_with_pooler`: Database pooled connection string to the branch after the reset.
 
 ## How to set up the NEON_API_KEY
 Navigate to the [Developer Settings](https://console.neon.tech/app/settings/api-keys) page in the Neon Console. Generate a new API key if you don't have one already. It's important not to share the API key or expose it in your actions or code. This is why you need to add the API key to a new GitHub secret.

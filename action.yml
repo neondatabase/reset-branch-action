@@ -49,11 +49,13 @@ runs:
           --output json \
           > branch_out
         
-        CS_POOLED=$(neonctl cs ${{ inputs.branch }} --project-id ${{ inputs.project_id }} --pooled)
-        CS=$(neonctl cs ${{ inputs.branch }} --project-id ${{ inputs.project_id }})
-        
         echo "branch reset out:"
         cat branch_out
 
+        echo "branch_id=$(cat branch_out | jq --raw-output '.id')" >> $GITHUB_OUTPUT
+        
+        CS_POOLED=$(neonctl cs ${{ inputs.branch }} --project-id ${{ inputs.project_id }} --pooled)
+        CS=$(neonctl cs ${{ inputs.branch }} --project-id ${{ inputs.project_id }})
+        
         echo "db_url=${CS}" >> $GITHUB_OUTPUT
         echo "db_url_with_pooler=${CS_POOLED}" >> $GITHUB_OUTPUT

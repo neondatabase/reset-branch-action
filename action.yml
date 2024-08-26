@@ -18,7 +18,7 @@ inputs:
   parent:
     description: 'If specified, the branch will be reset to the parent branch'
     required: false
-  cs_username:
+  cs_role_name:
     description: 'The output connection string db role name'
     required: false
   cs_database:
@@ -71,7 +71,7 @@ runs:
         cs () {
           neonctl cs ${{inputs.branch_id}} \
           --project-id ${{ inputs.project_id }} \
-          $(if [[ -n "${{ inputs.cs_username }}" ]] && [[ "${{ inputs.cs_username }}" != "false" ]]; then echo "--role-name ${{ inputs.cs_username }}"; fi) \
+          $(if [[ -n "${{ inputs.cs_role_name }}" ]] && [[ "${{ inputs.cs_role_name }}" != "false" ]]; then echo "--role-name ${{ inputs.cs_role_name }}"; fi) \
           $(if [[ -n "${{ inputs.cs_database }}" ]] && [[ "${{ inputs.cs_database }}" != "false" ]]; then echo "--database-name ${{ inputs.cs_database }}"; fi) \
           $(if [[ -n "${{ inputs.cs_ssl }}" ]]; then echo "--ssl ${{ inputs.cs_ssl }}"; fi) \
           $(if [[ -n "${{ inputs.cs_prisma }}" ]]; then echo "--prisma ${{ inputs.cs_prisma }}"; fi) \

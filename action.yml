@@ -73,14 +73,14 @@ runs:
         $(if [[ -n "${{ inputs.cs_username }}" ]] && [[ "${{ inputs.cs_username }}" != "false" ]]; then echo "--role-name ${{ inputs.cs_username }}"; fi) \
         $(if [[ -n "${{ inputs.cs_database }}" ]] && [[ "${{ inputs.cs_database }}" != "false" ]]; then echo "--database-name ${{ inputs.cs_database }}"; fi) \
         $(if [[ -n "${{ inputs.cs_ssl }}" ]]; then echo "--ssl ${{ inputs.cs_ssl }}"; fi) \
-        $(if [[ -n "${{ inputs.cs_prisma }}" ]]; then echo "--ssl ${{ inputs.cs_prisma }}"; fi))
+        $(if [[ -n "${{ inputs.cs_prisma }}" ]]; then echo "--prisma ${{ inputs.cs_prisma }}"; fi))
         
         CS_POOLED=$(neonctl cs ${{inputs.branch_id}} \
         --project-id ${{ inputs.project_id }} \
         $(if [[ -n "${{ inputs.cs_username }}" ]] && [[ "${{ inputs.cs_username }}" != "false" ]]; then echo "--role-name ${{ inputs.cs_username }}"; fi) \
         $(if [[ -n "${{ inputs.cs_database }}" ]] && [[ "${{ inputs.cs_database }}" != "false" ]]; then echo "--database-name ${{ inputs.cs_database }}"; fi) \
         $(if [[ -n "${{ inputs.cs_ssl }}" ]]; then echo "--ssl ${{ inputs.cs_ssl }}"; fi) \
-        $(if [[ -n "${{ inputs.cs_prisma }}" ]]; then echo "--ssl ${{ inputs.cs_prisma }}"; fi) \
+        $(if [[ -n "${{ inputs.cs_prisma }}" ]]; then echo "--prisma ${{ inputs.cs_prisma }}"; fi) \
         --pooled)
         
         echo "db_url=${CS}" >> $GITHUB_OUTPUT

@@ -88,8 +88,8 @@ runs:
           $(if [[ -n "$1" ]]; then echo "--pooled"; fi)
         }
         
-        CS_JSON=$(cs)
-        CS_JSON_POOLED=$(cs true)
+        CS_JSON=$(cs_json)
+        CS_JSON_POOLED=$(cs_json true)
         
         echo "db_url=$(echo $CS_JSON | jq -r '.connection_string')" >> $GITHUB_OUTPUT
         echo "db_url_with_pooler=${CS_JSON_POOLED}" >> $GITHUB_OUTPUT

@@ -48,17 +48,15 @@ outputs:
   db_url_with_pooler:
     description: 'DATABASE_URL with pooler of the branch after the reset'
     value: ${{ steps.reset-branch.outputs.db_url_with_pooler }}
-  cs_role_name:
-    description: 'The output connection string db role name'
-  cs_database:
-    description: 'The output connection string database name'
-  cs_prisma:
-    description: 'Use prisma in output connection string or not'
-    default: 'false'
-  cs_ssl:
-    description: >
-      Add sslmode to the connection string. Supported values are: "require", "verify-ca", "verify-full", "omit".
-    default: 'require'
+  host:
+    description: 'Branch host after reset'
+    value: ${{ steps.reset-branch.outputs.host }}
+  host_with_pooler:
+    description: 'Branch host with pooling enabled after reset'
+    value: ${{ steps.reset-branch.outputs.host_with_pooler }}
+  password:
+    description: 'Password for connecting to the new branch database with the input username after reset'
+    value: ${{ steps.reset-branch.outputs.password }}
 ```
 - `branch_id`: The ID of the newly reset branch.
 - `db_url`: Database connection string to the branch after the reset.

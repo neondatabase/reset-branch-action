@@ -102,5 +102,5 @@ runs:
         echo "host_with_pooler=${HOST_WITH_POOLER}" >> $GITHUB_OUTPUT
         
         PASSWORD=$(echo $CS_JSON | jq -r '.password')
-        echo "::add-mask::$PASSWORD"
+        echo "\n::add-mask::${PASSWORD}"
         echo "password=${PASSWORD}" >> $GITHUB_OUTPUT

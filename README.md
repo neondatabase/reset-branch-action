@@ -55,7 +55,7 @@ outputs:
     description: 'Branch host with pooling enabled after reset'
     value: ${{ steps.reset-branch.outputs.host_with_pooler }}
   password:
-    description: 'Password for connecting to the new branch database with the input username after reset'
+    description: 'Password for connecting to the branch database after reset'
     value: ${{ steps.reset-branch.outputs.password }}
 ```
 - `branch_id`: The ID of the newly reset branch.

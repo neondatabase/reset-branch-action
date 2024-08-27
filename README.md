@@ -63,6 +63,9 @@ outputs:
 - `branch_id`: The ID of the newly reset branch.
 - `db_url`: Database connection string to the branch after the reset.
 - `db_url_with_pooler`: Database pooled connection string to the branch after the reset.
+- `host`: Branch host after reset.
+- `host_with_pooler`: Branch host with pooling enabled after reset.
+- `password`: Password for connecting to the new branch database with the input username after reset.
 
 ## How to set up the NEON_API_KEY
 Navigate to the [Developer Settings](https://console.neon.tech/app/settings/api-keys) page in the Neon Console. Generate a new API key if you don't have one already. It's important not to share the API key or expose it in your actions or code. This is why you need to add the API key to a new GitHub secret.

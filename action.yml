@@ -44,6 +44,15 @@ outputs:
   db_url_with_pooler:
     description: 'DATABASE_URL with pooler of the branch after the reset'
     value: ${{ steps.reset-branch.outputs.db_url_with_pooler }}
+  host:
+    description: 'Branch host after reset'
+    value: ${{ steps.reset-branch.outputs.host }}
+  host_with_pooler:
+    description: 'Branch host with pooling enabled after reset'
+    value: ${{ steps.reset-branch.outputs.host_with_pooler }}
+  password:
+    description: 'Password for connecting to the new branch database with the input username after reset'
+    value: ${{ steps.reset-branch.outputs.password }}
 
 runs:
   using: 'composite'
@@ -68,18 +77,25 @@ runs:
 
         echo "branch_id=$(cat branch_out | jq --raw-output '.id')" >> $GITHUB_OUTPUT
         
-        cs () {
+        cs_json () {
           neonctl cs ${{inputs.branch_id}} \
           --project-id ${{ inputs.project_id }} \
           $(if [[ -n "${{ inputs.cs_role_name }}" ]] && [[ "${{ inputs.cs_role_name }}" != "false" ]]; then echo "--role-name ${{ inputs.cs_role_name }}"; fi) \
           $(if [[ -n "${{ inputs.cs_database }}" ]] && [[ "${{ inputs.cs_database }}" != "false" ]]; then echo "--database-name ${{ inputs.cs_database }}"; fi) \
           $(if [[ -n "${{ inputs.cs_ssl }}" ]]; then echo "--ssl ${{ inputs.cs_ssl }}"; fi) \
           $(if [[ -n "${{ inputs.cs_prisma }}" ]]; then echo "--prisma ${{ inputs.cs_prisma }}"; fi) \
+          --extended -o json \
           $(if [[ -n "$1" ]]; then echo "--pooled"; fi)
         }
         
-        CS=$(cs)
-        CS_POOLED=$(cs true)
+        CS_JSON=$(cs)
+        CS_JSON_POOLED=$(cs true)
         
-        echo "db_url=${CS}" >> $GITHUB_OUTPUT
-        echo "db_url_with_pooler=${CS_POOLED}" >> $GITHUB_OUTPUT
+        echo "db_url=$(echo $CS_JSON | jq -r '.connection_string')" >> $GITHUB_OUTPUT
+        echo "db_url_with_pooler=${CS_JSON_POOLED}" >> $GITHUB_OUTPUT
+        
+        echo "host=$(echo $CS_JSON | jq -r '.host')" >> $GITHUB_OUTPUT
+        echo "host_with_pooler=$(echo $CS_JSON_POOLED | jq -r '.host')" >> $GITHUB_OUTPUT
+        
+        echo "::add-mask::$(echo $CS_JSON | jq -r '.password')"
+        echo "password=$(echo $CS_JSON | jq -r '.password')" >> $GITHUB_OUTPUT

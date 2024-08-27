@@ -90,12 +90,17 @@ runs:
         
         CS_JSON=$(cs_json)
         CS_JSON_POOLED=$(cs_json true)
+        DB_URL=$(echo $CS_JSON | jq -r '.connection_string')
+        DB_URL_WITH_POOLER=$(echo $CS_JSON | jq -r '.connection_string')
         
-        echo "db_url=$(echo $CS_JSON | jq -r '.connection_string')" >> $GITHUB_OUTPUT
-        echo "db_url_with_pooler=${CS_JSON_POOLED}" >> $GITHUB_OUTPUT
+        echo "db_url=${DB_URL}" >> $GITHUB_OUTPUT
+        echo "db_url_with_pooler=${DB_URL_WITH_POOLER}" >> $GITHUB_OUTPUT
         
-        echo "host=$(echo $CS_JSON | jq -r '.host')" >> $GITHUB_OUTPUT
-        echo "host_with_pooler=$(echo $CS_JSON_POOLED | jq -r '.host')" >> $GITHUB_OUTPUT
+        HOST=$(echo $CS_JSON | jq -r '.host')
+        HOST_WITH_POOLER=$(echo $CS_JSON_POOLED | jq -r '.host')
+        echo "host=${HOST}" >> $GITHUB_OUTPUT
+        echo "host_with_pooler=${HOST_WITH_POOLER}" >> $GITHUB_OUTPUT
         
-        echo "::add-mask::$(echo $CS_JSON | jq -r '.password')"
-        echo "password=$(echo $CS_JSON | jq -r '.password')" >> $GITHUB_OUTPUT
+        PASSWORD=$(echo $CS_JSON | jq -r '.password')
+        echo "::add-mask::${PASSWORD}"
+        echo "password=${PASSWORD}" >> $GITHUB_OUTPUT

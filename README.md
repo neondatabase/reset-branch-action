@@ -19,7 +19,7 @@ jobs:
           project_id: rapid-haze-373089
           parent: true
           branch: child_branch
-          api_key: {{ secrets.NEON_API_KEY }}
+          api_key: ${{ secrets.NEON_API_KEY }}
         id: reset-branch
       - run: echo branch_id ${{ steps.reset-branch.outputs.branch_id }}
 ```
@@ -30,6 +30,12 @@ jobs:
 - `branch`: The name or id of the branch to reset.
 - `api_key`: An API key created in your Neon account. See [How to set up the NEON_API_KEY](#how-to-set-up-the-neon_api_key) for instructions.
 
+The action provides connection string as an output. `cs_*` optional inputs allow connection string to be configured. 
+- `cs_role_name`: The output connection string db role name.
+- `cs_database`: The output connection string database name.
+- `cs_prisma`: Use prisma in output connection string or not. Default - 'false'. 
+- `cs_ssl`: Add sslmode to the connection string. Supported values are: "require", "verify-ca", "verify-full", "omit".  Default - 'require'.
+
 ### Outputs
 
 ```yaml
@@ -37,8 +43,28 @@ outputs:
   branch_id:
     description: 'Reset branch id'
     value: ${{ steps.reset-branch.outputs.branch_id }}
+  db_url:
+    description: 'DATABASE_URL of the branch after the reset'
+    value: ${{ steps.reset-branch.outputs.db_url }}
+  db_url_with_pooler:
+    description: 'DATABASE_URL with pooler of the branch after the reset'
+    value: ${{ steps.reset-branch.outputs.db_url_with_pooler }}
+  host:
+    description: 'Branch host after reset'
+    value: ${{ steps.reset-branch.outputs.host }}
+  host_with_pooler:
+    description: 'Branch host with pooling enabled after reset'
+    value: ${{ steps.reset-branch.outputs.host_with_pooler }}
+  password:
+    description: 'Password for connecting to the branch database after reset'
+    value: ${{ steps.reset-branch.outputs.password }}
 ```
 - `branch_id`: The ID of the newly reset branch.
+- `db_url`: Database connection string to the branch after the reset.
+- `db_url_with_pooler`: Database pooled connection string to the branch after the reset.
+- `host`: Branch host after reset.
+- `host_with_pooler`: Branch host with pooling enabled after reset.
+- `password`: Password for connecting to the branch database after reset.
 
 ## How to set up the NEON_API_KEY
 Navigate to the [Developer Settings](https://console.neon.tech/app/settings/api-keys) page in the Neon Console. Generate a new API key if you don't have one already. It's important not to share the API key or expose it in your actions or code. This is why you need to add the API key to a new GitHub secret.

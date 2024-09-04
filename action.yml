@@ -15,6 +15,9 @@ inputs:
   api_key:
     description: 'The Neon API key'
     required: true
+  api_host:
+    description: 'The Neon API Host'
+    default: 'https://console.neon.tech/api/v2'
   parent:
     description: 'If specified, the branch will be reset to the parent branch'
     required: false
@@ -63,6 +66,7 @@ runs:
     - name: Reset branch
       env:
         NEON_API_KEY: ${{ inputs.api_key }}
+        NEON_API_HOST: ${{ inputs.api_host }}
       id: reset-branch
       shell: bash
       run: |

@@ -68,7 +68,7 @@ Here is an example of a complete GitHub Actions workflow that resets a Neon bran
 name: Neon Github Actions Reset Branch
 
 on:
-  # Modify the following line to trigger the workflow on a different event such as push or pull_request as per your requirement. We have used workflow_dispatch for manual triggering in this example.
+  # You can modify the following line to trigger the workflow on a different event, such as `push` or `pull_request`, as per your requirements. We have used `workflow_dispatch` for triggering the action in this example.
   workflow_dispatch:
 
 jobs:
@@ -94,7 +94,7 @@ You can further customize the action using these optional inputs:
 - **`cs_prisma`**: Set to `true` to format the output connection strings for Prisma. Defaults to `false`.
 - **`cs_ssl`**: Control the `sslmode` in the output connection strings. Supported values: `"require"`, `"verify-ca"`, `"verify-full"`, `"omit"`. Defaults to `"require"`.
 
-If you don't provide values for these optional fields, the action uses the following defaults for connection string outputs:
+If you donot provide any values for these optional fields, the action uses the following defaults for connection string outputs:
 
 - `cs_role_name`: Default role of the branch.
 - `cs_database`: Default database of the branch.

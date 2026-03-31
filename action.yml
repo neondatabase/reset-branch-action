@@ -38,9 +38,6 @@ inputs:
     default: 'require'
 
 outputs:
-  branch_id:
-    description: 'Returns the branch id'
-    value: ${{ steps.reset-branch.outputs.branch_id }}
   db_url:
     description: 'DATABASE_URL of the branch after the reset'
     value: ${{ steps.reset-branch.outputs.db_url }}
@@ -78,12 +75,9 @@ runs:
         
         echo "branch reset out:"
         cat branch_out
-
-        branch_id=$(cat branch_out | jq --raw-output '.id')
-        echo "branch_id=${branch_id}" >> $GITHUB_OUTPUT
         
         cs_json () {
-          neonctl cs ${branch_id} \
+          neonctl cs ${{ inputs.branch }} \
           --project-id ${{ inputs.project_id }} \
           $(if [[ -n "${{ inputs.cs_role_name }}" ]] && [[ "${{ inputs.cs_role_name }}" != "false" ]]; then echo "--role-name ${{ inputs.cs_role_name }}"; fi) \
           $(if [[ -n "${{ inputs.cs_database }}" ]] && [[ "${{ inputs.cs_database }}" != "false" ]]; then echo "--database-name ${{ inputs.cs_database }}"; fi) \

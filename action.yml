@@ -61,52 +61,72 @@ runs:
   using: 'composite'
   steps:
     - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-    - run: npm i -g neonctl@v2
+    - run: npm i -g --ignore-scripts neonctl@2.22.0
       shell: bash
     - name: Reset branch
       env:
         NEON_API_KEY: ${{ inputs.api_key }}
         NEON_API_HOST: ${{ inputs.api_host }}
+        INPUT_BRANCH: ${{ inputs.branch }}
+        INPUT_PROJECT_ID: ${{ inputs.project_id }}
+        INPUT_PARENT: ${{ inputs.parent }}
+        INPUT_CS_ROLE_NAME: ${{ inputs.cs_role_name }}
+        INPUT_CS_DATABASE: ${{ inputs.cs_database }}
+        INPUT_CS_SSL: ${{ inputs.cs_ssl }}
+        INPUT_CS_PRISMA: ${{ inputs.cs_prisma }}
       id: reset-branch
       shell: bash
       run: |
-        neonctl branches reset ${{ inputs.branch }} \
-          --project-id ${{ inputs.project_id }} \
-          $(if [[ -n "${{ inputs.parent }}" ]] && [[ "${{ inputs.parent }}" != "false" ]]; then echo "--parent"; fi) \
-          --output json \
-          > branch_out
-        
+        reset_args=("branches" "reset" "$INPUT_BRANCH" "--project-id" "$INPUT_PROJECT_ID")
+        if [[ -n "$INPUT_PARENT" ]] && [[ "$INPUT_PARENT" != "false" ]]; then
+          reset_args+=("--parent")
+        fi
+        reset_args+=("--output" "json")
+
+        neonctl "${reset_args[@]}" > branch_out
+
         echo "branch reset out:"
         cat branch_out
 
-        branch_id=$(cat branch_out | jq --raw-output '.id')
-        echo "branch_id=${branch_id}" >> $GITHUB_OUTPUT
-        
+        branch_id=$(jq --raw-output '.id' < branch_out)
+        echo "branch_id=${branch_id}" >> "$GITHUB_OUTPUT"
+
         cs_json () {
-          neonctl cs ${branch_id} \
-          --project-id ${{ inputs.project_id }} \
-          $(if [[ -n "${{ inputs.cs_role_name }}" ]] && [[ "${{ inputs.cs_role_name }}" != "false" ]]; then echo "--role-name ${{ inputs.cs_role_name }}"; fi) \
-          $(if [[ -n "${{ inputs.cs_database }}" ]] && [[ "${{ inputs.cs_database }}" != "false" ]]; then echo "--database-name ${{ inputs.cs_database }}"; fi) \
-          $(if [[ -n "${{ inputs.cs_ssl }}" ]]; then echo "--ssl ${{ inputs.cs_ssl }}"; fi) \
-          $(if [[ -n "${{ inputs.cs_prisma }}" ]]; then echo "--prisma ${{ inputs.cs_prisma }}"; fi) \
-          --extended -o json \
-          $(if [[ -n "$1" ]]; then echo "--pooled"; fi)
+          local pooled="$1"
+          local args=("cs" "$branch_id" "--project-id" "$INPUT_PROJECT_ID")
+          if [[ -n "$INPUT_CS_ROLE_NAME" ]] && [[ "$INPUT_CS_ROLE_NAME" != "false" ]]; then
+            args+=("--role-name" "$INPUT_CS_ROLE_NAME")
+          fi
+          if [[ -n "$INPUT_CS_DATABASE" ]] && [[ "$INPUT_CS_DATABASE" != "false" ]]; then
+            args+=("--database-name" "$INPUT_CS_DATABASE")
+          fi
+          if [[ -n "$INPUT_CS_SSL" ]]; then
+            args+=("--ssl" "$INPUT_CS_SSL")
+          fi
+          if [[ -n "$INPUT_CS_PRISMA" ]]; then
+            args+=("--prisma" "$INPUT_CS_PRISMA")
+          fi
+          args+=("--extended" "-o" "json")
+          if [[ -n "$pooled" ]]; then
+            args+=("--pooled")
+          fi
+          neonctl "${args[@]}"
         }
-        
+
         CS_JSON=$(cs_json)
         CS_JSON_POOLED=$(cs_json true)
-        DB_URL=$(echo $CS_JSON | jq -r '.connection_string')
-        DB_URL_WITH_POOLER=$(echo $CS_JSON_POOLED | jq -r '.connection_string')
-        
-        echo "db_url=${DB_URL}" >> $GITHUB_OUTPUT
-        echo "db_url_with_pooler=${DB_URL_WITH_POOLER}" >> $GITHUB_OUTPUT
-        
-        HOST=$(echo $CS_JSON | jq -r '.host')
-        HOST_WITH_POOLER=$(echo $CS_JSON_POOLED | jq -r '.host')
-        echo "host=${HOST}" >> $GITHUB_OUTPUT
-        echo "host_with_pooler=${HOST_WITH_POOLER}" >> $GITHUB_OUTPUT
-        
-        PASSWORD=$(echo $CS_JSON | jq -r '.password')
+        DB_URL=$(echo "$CS_JSON" | jq -r '.connection_string')
+        DB_URL_WITH_POOLER=$(echo "$CS_JSON_POOLED" | jq -r '.connection_string')
+
+        echo "db_url=${DB_URL}" >> "$GITHUB_OUTPUT"
+        echo "db_url_with_pooler=${DB_URL_WITH_POOLER}" >> "$GITHUB_OUTPUT"
+
+        HOST=$(echo "$CS_JSON" | jq -r '.host')
+        HOST_WITH_POOLER=$(echo "$CS_JSON_POOLED" | jq -r '.host')
+        echo "host=${HOST}" >> "$GITHUB_OUTPUT"
+        echo "host_with_pooler=${HOST_WITH_POOLER}" >> "$GITHUB_OUTPUT"
+
+        PASSWORD=$(echo "$CS_JSON" | jq -r '.password')
         echo $'\n'
         echo "::add-mask::${PASSWORD}"
-        echo "password=${PASSWORD}" >> $GITHUB_OUTPUT
+        echo "password=${PASSWORD}" >> "$GITHUB_OUTPUT"

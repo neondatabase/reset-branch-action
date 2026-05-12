@@ -24,6 +24,20 @@ Using the action requires adding a Neon API key to your GitHub Secrets. There ar
   4. Name the secret `NEON_API_KEY` and paste your API key in the **Value** field.
   5. Click **Add secret**.
 
+## Pinning and security
+
+Always pin this action by its **commit SHA**, not by tag (`@v1`, `@v1.3.2`). Tags are mutable references — anyone with write access to this repository can move `@v1` to a different commit, so a pin-by-tag is effectively a trust-on-first-use against every future state of the repo. A SHA pin is immutable.
+
+Recommended pattern:
+
+```yml
+- uses: neondatabase/reset-branch-action@<commit-sha> # v1.3.3
+```
+
+Copy the SHA for the latest release from the [Releases page](https://github.com/neondatabase/reset-branch-action/releases). Dependabot can auto-bump the pin if you keep the `# vX.Y.Z` comment in the same format.
+
+Releases on this repository are published with a [build-provenance attestation](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds), which you can verify against the GitHub OIDC issuer with `gh attestation verify`.
+
 ## Usage
 
 The following fields are required to run the Reset Branch action:
@@ -36,7 +50,7 @@ Setup the action in your workflow:
 
 ```yml
 steps:
-  - uses: neondatabase/reset-branch-action@v1
+  - uses: neondatabase/reset-branch-action@<commit-sha> # v1.3.3 — see https://github.com/neondatabase/reset-branch-action/releases
     id: reset-branch # Step ID to reference outputs
     with:
       project_id: your_neon_project_id
@@ -75,7 +89,7 @@ jobs:
   Reset-Neon-Branch:
     runs-on: ubuntu-24.04
     steps:
-      - uses: neondatabase/reset-branch-action@v1
+      - uses: neondatabase/reset-branch-action@<commit-sha> # v1.3.3 — see https://github.com/neondatabase/reset-branch-action/releases
         id: reset-branch
         with:
           project_id: ${{ vars.NEON_PROJECT_ID }}
